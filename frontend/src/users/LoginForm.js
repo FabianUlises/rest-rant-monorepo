@@ -17,8 +17,22 @@ function LoginForm() {
 
     async function handleSubmit(e) {
         e.preventDefault()
-       
+        const res = await fetch('http://localhost:5000/authentication/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credentials)
+        })
 
+        const data = await res.json();
+
+        if(res.status === 200)    {
+            setCurrentUser(data.user)
+            history.push('/');
+        } else {
+            setErrorMessage(data.message)
+        }
     }
 
     return (
