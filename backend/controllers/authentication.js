@@ -4,8 +4,17 @@ const bcrypt = require('bcrypt');
 
 const { User } = db;
 
-router.post('/', (req, res) => {
-    console.log('In here')
+router.post('/', async (req, res) => {
+    let user = await User.findOne({
+        where: {email: req.body.email}
+    })
+    if(!user || bcrypt.compare(req.body.passowrd, user.passowrdDigest)) {
+        res.status(404).json({
+            message: 'Could not find a user with the provided username and password'
+        })
+    } else {
+        res.json({ user })
+    }
 })
 
 module.exports = router;
