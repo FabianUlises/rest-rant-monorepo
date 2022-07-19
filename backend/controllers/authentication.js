@@ -13,8 +13,22 @@ router.post('/', async (req, res) => {
     if (!user || !bcrypt.compare(req.body.password, user.passwordDigest)) {
         res.send('user not found')
     } else {
+        req.session.userId = user.userId
         res.json({ user })
     }
+});
+router.get('/profile', async (req, res) => {
+    try {
+        let user = await User.findOne({
+            where: {
+                userId: req.session.userId
+            }
+        })
+        res.json(user)
+    } catch {
+        res.json(null)
+    }
 })
+
 
 module.exports = router;
